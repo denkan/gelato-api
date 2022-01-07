@@ -1,6 +1,5 @@
 import { GelatoApi } from '../src/gelato-api';
-import { GelatoListResponse } from '../src/base';
-import { GelatoProductCatalog } from '../src/products/products';
+import { GelatoApiInterfaces as I } from '../src/interfaces';
 
 require('dotenv').config(); // utilize .env file
 const apiKey = process.env.GELATO_API_KEY;
@@ -18,9 +17,9 @@ describe('GelatoApi End-To-End', () => {
   });
 
   describe('Product', () => {
-    let cats1: GelatoListResponse<GelatoProductCatalog>;
-    let cats2: GelatoListResponse<GelatoProductCatalog>;
-    let cats1Item1: GelatoProductCatalog;
+    let cats1: I.ListResponse<I.ProductCatalog>;
+    let cats2: I.ListResponse<I.ProductCatalog>;
+    let cats1Item1: I.ProductCatalog;
 
     it('should list catalogs', async () => {
       cats1 = await api.product.listCatalogs();
