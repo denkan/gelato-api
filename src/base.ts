@@ -1,12 +1,13 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { GelatoApiInterfaces as I } from './interfaces';
 
 export class GelatoApiBase {
-  protected config: GelatoApiConfig;
+  protected config: I.Config;
   protected axios: AxiosInstance;
 
   static readonly baseUrl?: string;
 
-  constructor(config: GelatoApiConfig, baseUrl?: string) {
+  constructor(config: I.Config, baseUrl?: string) {
     this.config = { ...config };
     this.axios = axios.create({
       baseURL: baseUrl ?? (this.constructor as typeof GelatoApiBase).baseUrl,
@@ -22,26 +23,7 @@ export class GelatoApiBase {
     return p
       .then((r) => r.data)
       .catch((err) => {
-        throw new GelatoApiError(err);
+        throw err; // TODO: something else?
       });
   }
-}
-
-export class GelatoApiError extends Error {
-  constructor(public axiosError: AxiosError) {
-    super(axiosError.message);
-  }
-}
-
-export interface GelatoApiConfig {
-  apiKey: string;
-}
-
-export interface GelatoListResponse<T> {
-  data: T[];
-  pagination: { total: number; offset: number };
-}
-export interface GelatoListRequest<T> {
-  data: T[];
-  pagination: { total: number; offset: number };
 }
