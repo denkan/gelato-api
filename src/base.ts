@@ -30,7 +30,6 @@ export class GelatoApiBase {
 export class GelatoApiError extends Error {
   constructor(public axiosError: AxiosError) {
     super(axiosError.message);
-    console.log('GELATO ERROR...', this);
   }
 }
 
@@ -38,11 +37,11 @@ export interface GelatoApiConfig {
   apiKey: string;
 }
 
-export interface GelatoApiListResponse<T> {
+export interface GelatoListResponse<T> {
   data: T[];
   pagination: { total: number; offset: number };
 }
-export interface GelatoApiListRequest<T> {
+export interface GelatoListRequest<T> {
   data: T[];
   pagination: { total: number; offset: number };
 }
