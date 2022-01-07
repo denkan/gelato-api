@@ -26,4 +26,12 @@ export class GelatoProductApi extends GelatoApiBase {
   ): Promise<{ products: I.Product[] }> {
     return this.handleResponse(this.axios.post(`/catalogs/${catalogUid}/products:search`, params));
   }
+
+  getProduct(productUid: string): Promise<{ products: I.Product[] }> {
+    return this.handleResponse(this.axios.get(`/products/${productUid}`));
+  }
+
+  getProductCoverDimensions(productUid: string, pageCount: number): Promise<{ products: I.Product[] }> {
+    return this.handleResponse(this.axios.get(`/products/${productUid}/cover-dimensions`, { params: { pageCount } }));
+  }
 }

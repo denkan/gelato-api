@@ -26,6 +26,14 @@ export namespace GelatoApiInterfaces {
   export interface Product {
     productUid: string;
     attributes: { [name: string]: string };
-    weight: {};
+    weight: {
+      value: number;
+      measureUnit: string;
+    };
+    supportedCountries: string[];
+    notSupportedCountries: string[];
+    isStockable: boolean;
+    isPrintable: boolean;
+    validPageCounts?: number[];
   }
 }

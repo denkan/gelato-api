@@ -19,7 +19,7 @@ describe('GelatoApi End-To-End', () => {
   describe('Product', () => {
     let cats1: I.ListResponse<I.ProductCatalog>;
     let cats2: I.ListResponse<I.ProductCatalog>;
-    let cats1Item1: I.ProductCatalog;
+    let prod1: I.Product;
 
     it('should list catalogs', async () => {
       cats1 = await api.product.listCatalogs();
@@ -51,6 +51,20 @@ describe('GelatoApi End-To-End', () => {
       expect(s2.products?.length).toBeLessThan(s1.products.length);
       expect(s2.products?.length).toBe(1);
       expect(s3.products?.length).toBe(0);
+
+      prod1 = s1.products[0];
+    });
+
+    it('should get specific product', async () => {
+      const prod = await api.product.getProduct(prod1.productUid);
+      expect(prod).toBeDefined();
+    });
+
+    it('should get cover dimensions of product', async () => {
+      const id =
+        'photobooks-hardcover_pf_210x280-mm-8x11-inch_pt_170-gsm-65lb-coated-silk_cl_4-4_ccl_4-4_bt_glued-left_ct_matt-lamination_prt_1-0_cpt_130-gsm-65-lb-cover-coated-silk_ver';
+      const cd = await api.product.getProductCoverDimensions(id, 100);
+      expect(cd).toBeDefined();
     });
   });
 });
