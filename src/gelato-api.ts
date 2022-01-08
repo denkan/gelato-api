@@ -1,5 +1,5 @@
 import { GelatoApiBase } from './base';
-import { GelatoApiInterfaces as I } from './interfaces';
+import { Gelato as I } from './types';
 import { GelatoOrdersApi } from './orders';
 import { GelatoProductApi } from './products';
 import { GelatoShipmentApi } from './shipment';

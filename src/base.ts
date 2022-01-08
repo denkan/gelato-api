@@ -1,5 +1,5 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { GelatoApiInterfaces as I } from './interfaces';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { Gelato as I } from './types';
 
 export class GelatoApiBase {
   protected config: I.Config;

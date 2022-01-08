@@ -1,4 +1,4 @@
-export namespace GelatoApiInterfaces {
+export namespace Gelato {
   export interface Config {
     apiKey: string;
   }

@@ -1,5 +1,5 @@
 import { GelatoApiBase } from '../base';
-import { GelatoApiInterfaces as I } from '../interfaces';
+import { Gelato as I } from '../types';
 
 export class GelatoProductApi extends GelatoApiBase {
   static baseUrl = 'https://product.gelatoapis.com/v3';
