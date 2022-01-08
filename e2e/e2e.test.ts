@@ -1,5 +1,5 @@
 import { GelatoApi } from '../src/gelato-api';
-import { GelatoApiInterfaces as I } from '../src/interfaces';
+import { Gelato as I } from '../src/types';
 
 require('dotenv').config(); // utilize .env file
 const apiKey = process.env.GELATO_API_KEY;
