@@ -212,16 +212,6 @@ describe('GelatoApi End-To-End', () => {
       expect(s4.orders.length).toBe(0);
     });
 
-    it('should NOT delete non-draft order', async () => {
-      await expect(api.orders.v3.deleteDraft(createdOrder.id)).rejects.toThrow();
-    });
-    it('should patch order back to draft', async () => {
-      await expect(api.orders.v3.patchDraft(createdOrder.id, { orderType: 'draft' })).resolves.not.toThrow();
-    });
-    it('should clean up order by deleting draft', async () => {
-      await expect(api.orders.v3.deleteDraft(createdOrder.id)).resolves.not.toThrow();
-    });
-
     it('should quote order', async () => {
       const testQuote: I.OrderQuoteRequest = {
         orderReferenceId: 'DUMMY-ORDER-FOR-TEST',
@@ -255,6 +245,44 @@ describe('GelatoApi End-To-End', () => {
       expect(q.quotes[0].products[0].currency).toBe(testQuote.currency);
       expect(q.quotes[0].shipmentMethods.length).toBeGreaterThan(0);
       expect(q.quotes[0].shipmentMethods[0].currency).toBe(testQuote.currency);
+    });
+
+    it('should NOT delete non-draft order', async () => {
+      await expect(api.orders.v3.deleteDraft(createdOrder.id)).rejects.toThrow();
+    });
+    it('should patch order back to draft', async () => {
+      await expect(api.orders.v3.patchDraft(createdOrder.id, { orderType: 'draft' })).resolves.not.toThrow();
+
+      // FYI: we do this here to be able to change shipping address below
+    });
+
+    it('should get order shipping address', async () => {
+      const sa = await api.orders.v3.getShippingAddress(createdOrder.id);
+      const testProps = Object.keys(testOrder.shippingAddress);
+      // @ts-ignore
+      testProps.forEach((p) => expect(sa[p]).toEqual(testOrder.shippingAddress[p]));
+    });
+
+    it('should update order shipping address', async () => {
+      const newAddress: I.OrderShippingAddress = {
+        firstName: 'Beta',
+        lastName: 'Tester',
+        addressLine1: 'New Street 999',
+        city: 'BetaTown',
+        postCode: '987 65',
+        country: 'SE', // FYI: country change isnt allowed
+        email: 'beta@example.com',
+      };
+      const sa = await api.orders.v3.updateShippingAddress(createdOrder.id, newAddress);
+      const testProps = Object.keys(newAddress);
+      // @ts-ignore
+      testProps.forEach((p) => expect(sa[p]).toEqual(newAddress[p]));
+
+      await expect(api.orders.v3.updateShippingAddress('INVALID-ORDER-ID', newAddress)).rejects.toThrow();
+    });
+
+    it('should clean up order by deleting draft', async () => {
+      await expect(api.orders.v3.deleteDraft(createdOrder.id)).resolves.not.toThrow();
     });
   });
 });

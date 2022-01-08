@@ -39,4 +39,12 @@ export class GelatoOrdersV3Api extends GelatoApiBase {
   quote(params: I.OrderQuoteRequest): Promise<{ orderReferenceId: string; quotes: I.OrderQuote[] }> {
     return this.handleResponse(this.axios.post(`${GelatoOrdersV3Api.baseUrl}:quote`, params));
   }
+
+  getShippingAddress(orderId: string): Promise<I.OrderShippingAddress> {
+    return this.handleResponse(this.axios.get(`${orderId}/shipping-address`));
+  }
+
+  updateShippingAddress(orderId: string, params: I.OrderShippingAddress): Promise<I.OrderShippingAddress> {
+    return this.handleResponse(this.axios.put(`${orderId}/shipping-address`, params));
+  }
 }
