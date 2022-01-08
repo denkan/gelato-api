@@ -3,7 +3,7 @@
 <!-- ![Build Status]() -->
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
-[![npm version](https://badge.fury.io/js/galeto-api.svg)](https://badge.fury.io/js/galeto-api)
+[![npm version](https://badge.fury.io/js/gelato-api.svg)](https://badge.fury.io/js/gelato-api)
 
 This library provides support for TypeScript/JavaScript [Gelato](https://www.gelato.com/)'s API. See full documentation on [Gelato API docs](https://dashboard.gelato.com/docs).
 
