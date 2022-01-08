@@ -52,7 +52,7 @@ describe('GelatoApi End-To-End', () => {
       expect(s2.products?.length).toBe(1);
       expect(s3.products?.length).toBe(0);
 
-      // save product uids for later test cases
+      // save for future test cases
       s1.products.forEach((p) => prodUids.push(p.productUid));
     });
 
@@ -99,5 +99,93 @@ describe('GelatoApi End-To-End', () => {
       expect(['normal', 'express', 'pallet']).toContain(r?.shipmentMethods[0]?.type);
       expect(Array.isArray(r?.shipmentMethods[0]?.supportedCountries)).toBe(true);
     });
+  });
+
+  describe('Orders', () => {
+    const testOrder: I.OrderCreateRequest = {
+      orderType: 'draft',
+      orderReferenceId: 'DUMMY-ORDER-FOR-TEST',
+      customerReferenceId: 'DUMMY-CUSTOMER-FOR-TEST',
+      currency: 'EUR',
+      items: [
+        {
+          itemReferenceId: 'DUMMY-ITEM-FOR-TEST',
+          productUid: 'cards_pf_bb_pt_350-gsm-coated-silk_cl_4-4_hor',
+          quantity: 1,
+          fileUrl: 'https://i1.sndcdn.com/artworks-000398776953-cwfbd0-t500x500.jpg',
+        },
+      ],
+      shippingAddress: {
+        firstName: 'Test',
+        lastName: 'Testson',
+        addressLine1: 'Test Street 123',
+        city: 'Testville',
+        postCode: '123 45',
+        country: 'SE',
+        email: 'test@example.com',
+      },
+    };
+    let createdOrder: I.Order;
+
+    it('should create order', async () => {
+      const o = await api.orders.v3.create(testOrder);
+      const testOrderProps = ['orderType', 'orderReferenceId', 'customerReferenceId', 'currency'];
+      const testShippingProps = Object.keys(testOrder.shippingAddress);
+      expect(o?.id).toBeDefined();
+      // @ts-ignore
+      testOrderProps.forEach((p) => expect(o[p]).toBe(testOrder[p]));
+      // @ts-ignore
+      testShippingProps.forEach((p) => expect(o.shippingAddress[p]).toBe(testOrder.shippingAddress[p]));
+      expect(o.shipment).toBeDefined();
+      expect(o.items.length).toBe(testOrder.items.length);
+      expect(o.receipts.length).toBeGreaterThan(0);
+
+      await expect(
+        api.orders.v3.create({ myInvalid: 'dummy-order' } as unknown as I.OrderCreateRequest),
+      ).rejects.toThrow();
+
+      // save for future test cases
+      createdOrder = o;
+    });
+
+    it('should get order', async () => {
+      const fetchedOrder = await api.orders.v3.get(createdOrder.id);
+      expect(fetchedOrder.id).toBe(createdOrder.id);
+
+      await expect(api.orders.v3.get('INVALID-ORDER-ID')).rejects.toThrow();
+    });
+
+    it('should delete draft order', async () => {
+      await expect(api.orders.v3.deleteDraft(createdOrder.id)).resolves.not.toThrow();
+      await expect(api.orders.v3.deleteDraft('INVALID-ORDER-ID')).rejects.toThrow();
+
+      // createdOrder is now deleted...
+    });
+
+    it('should patch draft order', async () => {
+      // ... create order once again
+      createdOrder = await api.orders.v3.create(testOrder);
+
+      const patchedOrder = await api.orders.v3.patchDraft(createdOrder.id, {
+        orderReferenceId: 'this shouldnt change',
+        orderType: 'order',
+      });
+      expect(patchedOrder).toBeDefined();
+      expect(patchedOrder.orderType).toBe('order');
+      expect(patchedOrder.orderReferenceId).toBe(testOrder.orderReferenceId);
+
+      await expect(api.orders.v3.patchDraft('INVALID-ORDER-ID', {})).rejects.toThrow();
+    });
+
+    it('should cancel order', async () => {
+      await expect(api.orders.v3.cancel(createdOrder.id)).resolves.not.toThrow();
+      await expect(api.orders.v3.cancel('INVALID-ORDER-ID')).rejects.toThrow();
+    });
+
+    it('should NOT delete non-draft order', async () => {
+      await expect(api.orders.v3.deleteDraft(createdOrder.id)).rejects.toThrow();
+    });
+
+    // api.orders.v3.deleteDraft(createdOrder.id);
   });
 });
