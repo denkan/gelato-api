@@ -21,11 +21,11 @@ describe('GelatoApi End-To-End', () => {
     let cats2: I.ListResponse<I.ProductCatalog>;
     const prodUids: string[] = [];
 
-    it('should list catalogs', async () => {
+    it('should get catalogs', async () => {
       cats1 = await api.products.getCatalogs();
       expect(cats1?.data?.length).toBeGreaterThan(0);
     });
-    it('should list catalogs with limit/offset params', async () => {
+    it('should get catalogs with limit/offset params', async () => {
       cats2 = await api.products.getCatalogs({ limit: 3, offset: 2 });
       expect(cats2.data.length).toBe(3);
       expect(cats2.data.length).toBeLessThan(cats1.data.length);
@@ -62,7 +62,7 @@ describe('GelatoApi End-To-End', () => {
       expect(prod.productUid).toBeDefined();
     });
 
-    it('should get cover dimensions of product', async () => {
+    it('should get cover dimensions for specific product', async () => {
       const id =
         'photobooks-hardcover_pf_210x280-mm-8x11-inch_pt_170-gsm-65lb-coated-silk_cl_4-4_ccl_4-4_bt_glued-left_ct_matt-lamination_prt_1-0_cpt_130-gsm-65-lb-cover-coated-silk_ver';
       const cd = await api.products.getCoverDimensions(id, { pageCount: 100 });
@@ -81,12 +81,23 @@ describe('GelatoApi End-To-End', () => {
       expect(prices1[0].currency).not.toBe(prices2[0].currency);
     });
 
-    it('should get stock availability for products', async () => {
+    it('should get stock availability for specific products', async () => {
       const productUids = prodUids.slice(0, 3);
       const stock = await api.products.getStockAvailability(productUids);
       expect(productUids.length).toBe(3);
       expect(stock?.productsAvailability.length).toBe(3);
       expect(stock?.productsAvailability[0].availability.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Shipment', () => {
+    it('should get shipment methods', async () => {
+      const r = await api.shipment.getMethods();
+      expect(r?.shipmentMethods?.length).toBeGreaterThan(0);
+      expect(r?.shipmentMethods[0]?.shipmentMethodUid).toBeDefined();
+      expect(r?.shipmentMethods[0]?.name).toBeDefined();
+      expect(['normal', 'express', 'pallet']).toContain(r?.shipmentMethods[0]?.type);
+      expect(Array.isArray(r?.shipmentMethods[0]?.supportedCountries)).toBe(true);
     });
   });
 });

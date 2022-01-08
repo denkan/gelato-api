@@ -9,4 +9,5 @@ export class GelatoApi extends GelatoApiBase {
   }
 
   readonly products = new GelatoProductApi(this.config);
+  readonly shipment = new GelatoShipmentApi(this.config);
 }

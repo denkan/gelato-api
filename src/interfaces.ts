@@ -90,4 +90,14 @@ export namespace GelatoApiInterfaces {
     | 'out-of-stock'
     | 'non-stockable'
     | 'not-supported';
+
+  export interface ShipmentMethod {
+    shipmentMethodUid: string;
+    type: 'normal' | 'express' | 'pallet';
+    name: string;
+    isBusiness: boolean;
+    isPrivate: boolean;
+    hasTracking: boolean;
+    supportedCountries: string[];
+  }
 }
