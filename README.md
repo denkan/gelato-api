@@ -22,7 +22,7 @@ yarn add gelato-api
 Before you can utilize the API you need:
 
 1. An account on [Gelato.com](https://www.gelato.com/).
-2. Create an API key in [Dashboard](https://dashboard.gelato.com/) > Developer > [API Keys](https://dashboard.gelato.com/keys/manage)
+2. Create an API key in [Dashboard > Developer > API Keys](https://dashboard.gelato.com/keys/manage)
 
 ```ts
 import { GelatoApi } from 'gelato-api';
