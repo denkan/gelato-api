@@ -118,9 +118,10 @@ const shippingAddress = await gelato.orders.v3.getShippingAddress('gelato-order-
 const updatedShippingAddress = await gelato.orders.v3.updateShippingAddress('gelato-order-id', { ... });
 ```
 
-> **_NOTE_** Orders V2 is not supported for now.
+> **_NOTE_**
+> Orders V2 is not supported for now.
 
-### Run end-to-end tests
+## Run end-to-end tests
 
 The E2E tests will utilize each feature supported, meaning it will list, create, update and delete actual data in the API. However, when it runs successfully it should have cleaned up any test orders. If not - it might be worth to take a look in the [Dashboard > Orders](https://dashboard.gelato.com/orders/list) to see if any manual clean up is required.
 

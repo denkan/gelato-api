@@ -1,6 +1,6 @@
 {
   "name": "gelato-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gelato API Client in JavaScript/TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DZuz14/typescript-npm-package-boilerplate.git"
+    "url": "git+https://github.com/denkan/gelato-api.git"
   },
   "keywords": [
     "gelato",
