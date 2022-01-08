@@ -8,7 +8,7 @@ export class GelatoProductApi extends GelatoApiBase {
     super(config);
   }
 
-  listCatalogs(params?: { offset?: number; limit?: number }): Promise<I.ListResponse<I.ProductCatalog>> {
+  getCatalogs(params?: { offset?: number; limit?: number }): Promise<I.ListResponse<I.ProductCatalog>> {
     return this.handleResponse(this.axios.get('/catalogs', { params }));
   }
 
@@ -16,7 +16,7 @@ export class GelatoProductApi extends GelatoApiBase {
     return this.handleResponse(this.axios.get(`/catalogs/${catalogUid}`));
   }
 
-  searchProductsInCatalog(
+  getProductsInCatalog(
     catalogUid: string,
     params?: {
       offset?: number;
@@ -31,7 +31,21 @@ export class GelatoProductApi extends GelatoApiBase {
     return this.handleResponse(this.axios.get(`/products/${productUid}`));
   }
 
-  getProductCoverDimensions(productUid: string, pageCount: number): Promise<{ products: I.Product[] }> {
-    return this.handleResponse(this.axios.get(`/products/${productUid}/cover-dimensions`, { params: { pageCount } }));
+  getCoverDimensions(
+    productUid: string,
+    params: { pageCount: number },
+  ): Promise<{ products: I.ProductCoverDimension[] }> {
+    return this.handleResponse(this.axios.get(`/products/${productUid}/cover-dimensions`, { params }));
+  }
+
+  getPrices(
+    productUid: string,
+    params?: { country?: string; currency?: string; pageCount?: number },
+  ): Promise<I.ProductPrice[]> {
+    return this.handleResponse(this.axios.get(`/products/${productUid}/prices`, { params }));
+  }
+
+  getStockAvailability(products: string[]): Promise<{ productsAvailability: I.ProductAvailability[] }> {
+    return this.handleResponse(this.axios.post(`/stock/region-availability`, { products }));
   }
 }

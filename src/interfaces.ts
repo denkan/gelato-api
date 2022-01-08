@@ -36,4 +36,47 @@ export namespace GelatoApiInterfaces {
     isPrintable: boolean;
     validPageCounts?: number[];
   }
+  export interface ProductCoverDimension {
+    productUid: string;
+    pageCount: number;
+    measureUnit: string;
+    wraparoundInsideSize?: ProductDimensionAttribute;
+    wraparoundEdgeSize?: ProductDimensionAttribute;
+    contentBackSize?: ProductDimensionAttribute;
+    jointBackSize?: ProductDimensionAttribute;
+    spineSize?: ProductDimensionAttribute;
+    jointFrontSize?: ProductDimensionAttribute;
+    contentFrontSize?: ProductDimensionAttribute;
+    bleedSize?: ProductDimensionAttribute;
+  }
+  export interface ProductDimensionAttribute {
+    width: number;
+    height: number;
+    left: number;
+    top: number;
+    thickness?: number;
+  }
+  export interface ProductPrice {
+    productUid: string;
+    country: string;
+    currency: string;
+    quantity: number;
+    price: number;
+    pageCount?: number;
+  }
+  export interface ProductAvailability {
+    productUid: string;
+    availability: Availability[];
+  }
+  export interface Availability {
+    stockRegionUid: string;
+    status: AvailabilityStatus;
+    replenishmentDate?: string;
+  }
+  export type AvailabilityStatus =
+    | 'in-stock'
+    | 'out-of-stock-replenishable'
+    | 'out-of-stock'
+    | 'non-stockable'
+    | 'not-supported';
 }
