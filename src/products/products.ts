@@ -23,11 +23,14 @@ export class GelatoProductApi extends GelatoApiBase {
       limit?: number;
       attributeFilters?: { [name: string]: string[] };
     },
-  ): Promise<{ products: I.Product[] }> {
+  ): Promise<{
+    products: I.ProductSearch[];
+    hits: { attributeHits: { [attributeName: string]: { [attributeValue: string]: number } } };
+  }> {
     return this.handleResponse(this.axios.post(`/catalogs/${catalogUid}/products:search`, params));
   }
 
-  getProduct(productUid: string): Promise<{ products: I.Product[] }> {
+  getProduct(productUid: string): Promise<I.Product> {
     return this.handleResponse(this.axios.get(`/products/${productUid}`));
   }
 

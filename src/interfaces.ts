@@ -22,20 +22,31 @@ export namespace GelatoApiInterfaces {
     productAttributeValueUid: string;
     title: string;
   }
-
-  export interface Product {
+  export interface MeasureUnit {
+    value: number;
+    measureUnit: string;
+  }
+  interface ProductBase {
     productUid: string;
     attributes: { [name: string]: string };
-    weight: {
-      value: number;
-      measureUnit: string;
-    };
+    weight: MeasureUnit;
     supportedCountries: string[];
+  }
+  export interface Product extends ProductBase {
     notSupportedCountries: string[];
     isStockable: boolean;
     isPrintable: boolean;
     validPageCounts?: number[];
   }
+  export interface ProductSearch extends ProductBase {
+    dimensions: {
+      Width?: MeasureUnit;
+      Height?: MeasureUnit;
+      Thickness?: MeasureUnit;
+      [size: string]: MeasureUnit | undefined;
+    };
+  }
+
   export interface ProductCoverDimension {
     productUid: string;
     pageCount: number;
