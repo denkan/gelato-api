@@ -93,13 +93,17 @@ export namespace GelatoApiInterfaces {
 
   export interface ShipmentMethod {
     shipmentMethodUid: string;
-    type: 'normal' | 'express' | 'pallet';
+    type: ShipmentType;
     name: string;
     isBusiness: boolean;
     isPrivate: boolean;
     hasTracking: boolean;
     supportedCountries: string[];
   }
+
+  export type ShipmentType = 'normal' | 'express' | 'pallet';
+
+  export type OrderType = 'draft' | 'order';
 
   export type OrderFulfillmentStatus =
     | 'created'
@@ -127,11 +131,11 @@ export namespace GelatoApiInterfaces {
 
   export interface OrderCreateRequest {
     /** Default: 'order' */
-    orderType?: 'draft' | 'order';
+    orderType?: OrderType;
     orderReferenceId: string;
     customerReferenceId: string;
     currency: string;
-    shipmentMethodUid?: 'normal' | 'express' | string;
+    shipmentMethodUid?: ShipmentType | string;
     items: OrderItemRequest[];
     /** Max number of entries: 20 */
     metadata?: Metadata[];
@@ -142,7 +146,7 @@ export namespace GelatoApiInterfaces {
   }
   export interface Order extends OrderCreateRequest {
     id: string;
-    orderType: 'draft' | 'order';
+    orderType: OrderType;
     fulfillmentStatus: OrderFulfillmentStatus;
     financialStatus: OrderFinancialStatus;
     channel: string;
@@ -376,5 +380,54 @@ export namespace GelatoApiInterfaces {
     updatedAt: string;
     orderedAt: string;
     // -- Additional props found in actual response:
+    clientId: string;
+    orderType: OrderType;
+    connectedOrderIds: string;
+    storeId?: string;
+    totalIncVat?: string;
+    itemsCount: number;
+  }
+
+  export interface OrderQuoteRequest {
+    orderReferenceId: string;
+    customerReferenceId: string;
+    currency: string;
+    recipient: OrderShippingAddress;
+    products: OrderItemRequest[];
+    allowMultipleQuotes?: boolean;
+  }
+
+  export interface OrderQuote {
+    id: string;
+    itemReferenceIds: string[];
+    fulfillmentCountry: string;
+    shipmentMethods: OrderQuoteShipment[];
+    products: OrderQuoteProduct[];
+  }
+  export interface OrderQuoteShipment {
+    name: string;
+    shipmentMethodUid: string;
+    price: number;
+    currency: string;
+    minDeliveryDays: number;
+    maxDeliveryDays: number;
+    /** Epoch time, the docs' wrong */
+    minDeliveryDate: number;
+    /** Epoch time, the docs' wrong */
+    maxDeliveryDate: number;
+    type: ShipmentType;
+    isPrivate: boolean;
+    isBusiness: boolean;
+    totalWeight: number;
+    numberOfParcels: number;
+  }
+
+  export interface OrderQuoteProduct {
+    itemReferenceId: string;
+    productUid: string;
+    quantity: number;
+    currency: string;
+    price: number;
+    pageCount: number;
   }
 }

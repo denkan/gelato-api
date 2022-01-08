@@ -155,6 +155,13 @@ describe('GelatoApi End-To-End', () => {
       await expect(api.orders.v3.get('INVALID-ORDER-ID')).rejects.toThrow();
     });
 
+    it('should update order', async () => {
+      const updatedOrder = await api.orders.v3.update({ ...createdOrder, customerReferenceId: 'CUSTOMER-REF-CHANGED' });
+      expect(updatedOrder.customerReferenceId).toBe('CUSTOMER-REF-CHANGED');
+
+      await expect(api.orders.v3.update({} as I.Order)).rejects.toThrow();
+    });
+
     it('should delete draft order', async () => {
       await expect(api.orders.v3.deleteDraft(createdOrder.id)).resolves.not.toThrow();
       await expect(api.orders.v3.deleteDraft('INVALID-ORDER-ID')).rejects.toThrow();
@@ -182,10 +189,6 @@ describe('GelatoApi End-To-End', () => {
       await expect(api.orders.v3.cancel('INVALID-ORDER-ID')).rejects.toThrow();
     });
 
-    it('should NOT delete non-draft order', async () => {
-      await expect(api.orders.v3.deleteDraft(createdOrder.id)).rejects.toThrow();
-    });
-
     it('should search orders', async () => {
       // FYI: createdOrder does exists as cancelled
 
@@ -207,6 +210,51 @@ describe('GelatoApi End-To-End', () => {
       expect(s2.orders.length).toBeGreaterThan(0);
       expect(s3.orders.length).toBeGreaterThan(0);
       expect(s4.orders.length).toBe(0);
+    });
+
+    it('should NOT delete non-draft order', async () => {
+      await expect(api.orders.v3.deleteDraft(createdOrder.id)).rejects.toThrow();
+    });
+    it('should patch order back to draft', async () => {
+      await expect(api.orders.v3.patchDraft(createdOrder.id, { orderType: 'draft' })).resolves.not.toThrow();
+    });
+    it('should clean up order by deleting draft', async () => {
+      await expect(api.orders.v3.deleteDraft(createdOrder.id)).resolves.not.toThrow();
+    });
+
+    it('should quote order', async () => {
+      const testQuote: I.OrderQuoteRequest = {
+        orderReferenceId: 'DUMMY-ORDER-FOR-TEST',
+        customerReferenceId: 'DUMMY-CUSTOMER-FOR-TEST',
+        currency: 'EUR',
+        products: [
+          {
+            itemReferenceId: 'DUMMY-ITEM-FOR-TEST',
+            productUid: 'cards_pf_bb_pt_350-gsm-coated-silk_cl_4-4_hor',
+            quantity: 1,
+            fileUrl: 'https://i1.sndcdn.com/artworks-000398776953-cwfbd0-t500x500.jpg',
+          },
+        ],
+        recipient: {
+          firstName: 'Test',
+          lastName: 'Testson',
+          addressLine1: 'Test Street 123',
+          city: 'Testville',
+          postCode: '123 45',
+          country: 'SE',
+          email: 'test@example.com',
+        },
+      };
+      const q = await api.orders.v3.quote(testQuote);
+      expect(q).toBeDefined();
+      // expect(q.orderReferenceId).toBe(testQuote.orderReferenceId); // Why does Gelato generate own orderReferenceId?!
+      expect(q.quotes.length).toBeGreaterThan(0);
+      expect(q.quotes[0].itemReferenceIds).toContain(testQuote.products[0].itemReferenceId);
+      expect(q.quotes[0].fulfillmentCountry).toBeDefined();
+      expect(q.quotes[0].products.length).toBeGreaterThan(0);
+      expect(q.quotes[0].products[0].currency).toBe(testQuote.currency);
+      expect(q.quotes[0].shipmentMethods.length).toBeGreaterThan(0);
+      expect(q.quotes[0].shipmentMethods[0].currency).toBe(testQuote.currency);
     });
   });
 });
