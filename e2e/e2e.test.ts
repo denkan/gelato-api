@@ -169,12 +169,12 @@ describe('GelatoApi End-To-End', () => {
       const patchedOrder = await api.orders.v3.patchDraft(createdOrder.id, {
         orderReferenceId: 'this shouldnt change',
         orderType: 'order',
-      });
+      } as any);
       expect(patchedOrder).toBeDefined();
       expect(patchedOrder.orderType).toBe('order');
       expect(patchedOrder.orderReferenceId).toBe(testOrder.orderReferenceId);
 
-      await expect(api.orders.v3.patchDraft('INVALID-ORDER-ID', {})).rejects.toThrow();
+      await expect(api.orders.v3.patchDraft('INVALID-ORDER-ID', { orderType: 'order' })).rejects.toThrow();
     });
 
     it('should cancel order', async () => {
@@ -186,6 +186,27 @@ describe('GelatoApi End-To-End', () => {
       await expect(api.orders.v3.deleteDraft(createdOrder.id)).rejects.toThrow();
     });
 
-    // api.orders.v3.deleteDraft(createdOrder.id);
+    it('should search orders', async () => {
+      // FYI: createdOrder does exists as cancelled
+
+      const [s1, s2, s3, s4] = await Promise.all([
+        api.orders.v3.search({
+          orderReferenceIds: [testOrder.orderReferenceId],
+        }),
+        api.orders.v3.search({
+          search: 'test',
+        }),
+        api.orders.v3.search({
+          countries: [testOrder.shippingAddress.country],
+        }),
+        api.orders.v3.search({
+          orderReferenceId: 'INVALID-ORDER-REF-ID',
+        }),
+      ]);
+      expect(s1.orders.length).toBeGreaterThan(0);
+      expect(s2.orders.length).toBeGreaterThan(0);
+      expect(s3.orders.length).toBeGreaterThan(0);
+      expect(s4.orders.length).toBe(0);
+    });
   });
 });

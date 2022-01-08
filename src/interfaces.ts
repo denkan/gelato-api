@@ -347,4 +347,34 @@ export namespace GelatoApiInterfaces {
     createdAt: string;
     updatedAt: string;
   }
+
+  export interface OrderSearchRequest {
+    ids?: string;
+    orderReferenceId?: string;
+    orderReferenceIds?: string[];
+    fulfillmentStatuses?: string[];
+    financialStatuses?: string[];
+    channels?: string[];
+    countries?: string[];
+    search?: string;
+    startDate?: string;
+    endDate?: string;
+    offset?: number;
+    limit?: number;
+  }
+  export interface OrderSearch {
+    id: string;
+    orderReferenceId: string;
+    fulfillmentStatus: OrderFulfillmentStatus;
+    financialStatus: OrderFinancialStatus;
+    channel: string;
+    currency?: string;
+    firstName: string;
+    lastName: string;
+    country: string;
+    createdAt: string;
+    updatedAt: string;
+    orderedAt: string;
+    // -- Additional props found in actual response:
+  }
 }

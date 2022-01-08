@@ -20,11 +20,15 @@ export class GelatoOrdersV3Api extends GelatoApiBase {
     return this.handleResponse(this.axios.delete(orderId));
   }
 
-  patchDraft(orderId: string, order: Partial<I.Order>): Promise<I.Order> {
-    return this.handleResponse(this.axios.patch(orderId, order));
+  patchDraft(orderId: string, params: { orderType: 'draft' | 'order' }): Promise<I.Order> {
+    return this.handleResponse(this.axios.patch(orderId, params));
   }
 
   cancel(orderId: string): Promise<void> {
     return this.handleResponse(this.axios.post(`${orderId}:cancel`));
+  }
+
+  search(params: I.OrderSearchRequest): Promise<{ orders: I.OrderSearch[] }> {
+    return this.handleResponse(this.axios.post(`${GelatoOrdersV3Api.baseUrl}:search`, params));
   }
 }
