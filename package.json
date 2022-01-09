@@ -1,6 +1,6 @@
 {
   "name": "gelato-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Gelato API Client in JavaScript/TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
