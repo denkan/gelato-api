@@ -353,7 +353,7 @@ export namespace Gelato {
   }
 
   export interface OrderSearchRequest {
-    ids?: string;
+    ids?: string[];
     orderReferenceId?: string;
     orderReferenceIds?: string[];
     fulfillmentStatuses?: string[];
