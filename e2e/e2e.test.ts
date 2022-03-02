@@ -192,7 +192,10 @@ describe('GelatoApi End-To-End', () => {
     it('should search orders', async () => {
       // FYI: createdOrder does exists as cancelled
 
-      const [s1, s2, s3, s4] = await Promise.all([
+      const [s0, s1, s2, s3, s4] = await Promise.all([
+        api.orders.v3.search({
+          ids: [createdOrder.id],
+        }),
         api.orders.v3.search({
           orderReferenceIds: [testOrder.orderReferenceId],
         }),
@@ -206,6 +209,7 @@ describe('GelatoApi End-To-End', () => {
           orderReferenceId: 'INVALID-ORDER-REF-ID',
         }),
       ]);
+      expect(s0.orders.length).toBe(1);
       expect(s1.orders.length).toBeGreaterThan(0);
       expect(s2.orders.length).toBeGreaterThan(0);
       expect(s3.orders.length).toBeGreaterThan(0);
